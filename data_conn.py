@@ -71,7 +71,7 @@ def search_user(name, passwd):
     )
     cursor = conn.cursor()
 
-    # Insert a user into the 'users' table
+    # Search a user in the 'users' table with name and passwd
     cursor.execute(
         """SELECT * FROM users WHERE name = %s AND password = %s""",
         (name, passwd))
@@ -94,7 +94,7 @@ def insert_tasks(titre: str, desc: str, done: int, id_user: int):
     )
     cursor = conn.cursor()
 
-    # Insert a user into the 'tasks' table
+    # Insert a task into the 'tasks' table
     cursor.execute(
         """INSERT INTO tasks (titre, description, fini, userId)
         VALUES (%s, %s, %s, %s)""",
@@ -114,7 +114,7 @@ def list_tasks(id):
     )
     cursor = conn.cursor()
 
-    # Insert a user into the 'users' table
+    # Get all tasks from a specific user
     cursor.execute(
         """SELECT * FROM tasks WHERE userId = %s""",
         (id,))
@@ -127,6 +127,35 @@ def list_tasks(id):
     return res
 
 
+def get_stats(userId):
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="cli_todo"
+    )
+    cursor = conn.cursor()
+
+    # Count all tasks from a user
+    cursor.execute(
+        """SELECT COUNT(*) FROM tasks WHERE userId = %s""",
+        (userId,))
+    total = cursor.fetchone()[0]
+    # print(total)
+
+    # Count done tasks from a user
+    cursor.execute(
+        """SELECT COUNT(*) FROM tasks WHERE userId = %s AND fini = %s""",
+        (userId, 1))
+    done = cursor.fetchone()[0]
+    # print(done)
+
+    cursor.close()
+    conn.close()
+
+    return total, done
+
+
 if __name__ == "__main__":
     # create_database()
     # insert_user("FuLLM374L", "full@metal.com", "N4vyS34l", 1)
@@ -135,5 +164,6 @@ if __name__ == "__main__":
     # insert_tasks("push_up", "en faire 30 chaque jour", 0, 1)
     # insert_tasks("Arabic", "a lesson by day", 0, 1)
     # insert_tasks("Be happy", "Every single day", 1, 1)
-    for t in list_tasks(3):
-        print(t)
+    # for t in list_tasks(3):
+    #     print(t)
+    print(get_stats(1))
