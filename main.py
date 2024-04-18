@@ -10,7 +10,7 @@ import data_conn
 def app():
     if not data_app["user"].get("id", None):
         id = data_conn.search_user(data_app["user"]["name"],
-                                   data_app["user"]["passwd"])
+                                   data_app["user"]["passwd"])[0]
         data_app["user"]["id"] = id
 
     # Texte de bienvenue
@@ -19,7 +19,7 @@ def app():
     print(Style.RESET_ALL)
 
     app_menu = ["Lister mes tâches", "Nouvelle tâche", "Statistiques",
-                "Modifier une tâche", "Quitter"]
+                "Modifier une tâche", "Supprimer une tâche", "Quitter"]
 
     while data_app["run"]:
         act = inquirer.select(message=f"{data_app['user']['name']} >",
@@ -28,7 +28,7 @@ def app():
 
         # Liste des tâches
         if act == app_menu[0]:
-            table = Table(title="Liste Des Tâches")
+            table = Table(title="Liste Des Tâches", show_lines=True)
 
             table.add_column("ID", justify="center")
             table.add_column("Titre")
@@ -43,6 +43,7 @@ def app():
                 table.add_row(*row, style=col)
 
             console = Console()
+            print()
             console.print(table)
 
         # Nouvelle tâche
@@ -53,8 +54,12 @@ def app():
         elif act == app_menu[2]:
             ...
 
-        # Modifier un tâche
+        # Modifier une tâche
         elif act == app_menu[3]:
+            ...
+
+        # Supprimer une tâche
+        elif act == app_menu[4]:
             ...
 
         # Quitter

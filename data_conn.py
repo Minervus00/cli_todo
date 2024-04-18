@@ -128,12 +128,12 @@ def list_tasks(id):
 
 
 if __name__ == "__main__":
-    create_database()
-    insert_user("FuLLM374L", "full@metal.com", "N4vyS34l", 1)
-    resp = search_user("FuLLM374L", "N4vyS34l")
-    print(resp)
-    insert_tasks("push_up", "en faire 30 chaque jour", 0, 1)
-    insert_tasks("Arabic", "a lesson by day", 0, 1)
-    insert_tasks("Be happy", "Every single day", 1, 1)
-    for t in list_tasks(1):
+    # create_database()
+    # insert_user("FuLLM374L", "full@metal.com", "N4vyS34l", 1)
+    # resp = search_user("FuLLM374L", "N4vyS34l")
+    # print(resp)
+    # insert_tasks("push_up", "en faire 30 chaque jour", 0, 1)
+    # insert_tasks("Arabic", "a lesson by day", 0, 1)
+    # insert_tasks("Be happy", "Every single day", 1, 1)
+    for t in list_tasks(3):
         print(t)
