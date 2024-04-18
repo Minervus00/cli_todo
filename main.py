@@ -48,11 +48,18 @@ def app():
 
         # Nouvelle tâche
         elif act == app_menu[1]:
-            ...
+            titre = inquirer.text(message="Titre:", amark="").execute()
+            desc = inquirer.text(message="Description:", amark="").execute()
+            done = int(inquirer.confirm(message="Marquer comme termine ?").execute())
+            data_conn.insert_tasks(titre, desc, done, data_app["user"]["id"])
+            print(Fore.GREEN + "<!> Operation effectuee avec succes\n" + Style.RESET_ALL)
 
         # Stats
         elif act == app_menu[2]:
-            ...
+            if data_app["user"]["admin"]:
+                ...
+            else:
+                ...
 
         # Modifier une tâche
         elif act == app_menu[3]:
