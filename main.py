@@ -57,12 +57,17 @@ def app():
         # Stats
         elif act == app_menu[2]:
             if data_app["user"]["admin"]:
-                ...
+                total, done = data_conn.get_stats(data_app["user"]["id"])
+                print("Total ->", Fore.BLUE, total, Style.RESET_ALL)
+                print("Fini ->", Fore.BLUE, done, Style.RESET_ALL)
+                print("Taux d'execution ->", Fore.GREEN,
+                      str(round(done/total, 2)) + "%", Style.RESET_ALL)
             else:
                 total, done = data_conn.get_stats(data_app["user"]["id"])
                 print("Total ->", Fore.BLUE, total, Style.RESET_ALL)
                 print("Fini ->", Fore.BLUE, done, Style.RESET_ALL)
-                print("Taux d'execution ->", Fore.GREEN, round(done/total, 2), Style.RESET_ALL)
+                print("Taux d'execution ->", Fore.GREEN,
+                      str(round(done/total, 2)) + "%", Style.RESET_ALL)
 
         # Modifier une tâche
         elif act == app_menu[3]:
