@@ -1,13 +1,27 @@
 import mysql.connector
 
+USERNAME = "root"
+PASSWD = "root"
+
+
+def get_conn():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user=USERNAME,
+        password=PASSWD,
+        database="cli_todo"
+    )
+
+    return conn
+
 
 # Function to create the database and tables if they don't exist
 def create_database():
     # Connect to MySQL server
     conn = mysql.connector.connect(
         host="localhost",
-        user="root",
-        password="root"
+        user=USERNAME,
+        password=PASSWD
     )
     cursor = conn.cursor()
 
@@ -42,12 +56,7 @@ def create_database():
 
 def insert_user(name: str, email: str, passwd: str, admin: int):
     # Connect to MySQL server
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="cli_todo"
-    )
+    conn = get_conn()
     cursor = conn.cursor()
 
     # Insert a user into the 'users' table
@@ -63,12 +72,7 @@ def insert_user(name: str, email: str, passwd: str, admin: int):
 
 
 def search_user(name, passwd):
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="cli_todo"
-    )
+    conn = get_conn()
     cursor = conn.cursor()
 
     # Search a user in the 'users' table with name and passwd
@@ -86,12 +90,7 @@ def search_user(name, passwd):
 
 def insert_tasks(titre: str, desc: str, done: int, id_user: int):
     # Connect to MySQL server
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="cli_todo"
-    )
+    conn = get_conn()
     cursor = conn.cursor()
 
     # Insert a task into the 'tasks' table
@@ -106,12 +105,7 @@ def insert_tasks(titre: str, desc: str, done: int, id_user: int):
 
 
 def list_tasks(id):
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="cli_todo"
-    )
+    conn = get_conn()
     cursor = conn.cursor()
 
     # Get all tasks from a specific user
@@ -128,12 +122,7 @@ def list_tasks(id):
 
 
 def get_stats(userId):
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="cli_todo"
-    )
+    conn = get_conn()
     cursor = conn.cursor()
 
     # Count all tasks from a user
@@ -154,6 +143,20 @@ def get_stats(userId):
     conn.close()
 
     return total, done
+
+
+def admin_stats():
+    conn = get_conn()
+    cursor = conn.cursor()
+
+    # Count all tasks from a user
+    cursor.execute(
+        """SELECT users.name, tasks.*
+        FROM tasks
+        INNER JOIN users ON tasks.user_id = users.id
+        WHERE tasks.user_id = 2""")
+    total = cursor.fetchall()
+    # print(total)
 
 
 if __name__ == "__main__":

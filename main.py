@@ -66,8 +66,10 @@ def app():
                 total, done = data_conn.get_stats(data_app["user"]["id"])
                 print("Total ->", Fore.BLUE, total, Style.RESET_ALL)
                 print("Fini ->", Fore.BLUE, done, Style.RESET_ALL)
-                print("Taux d'execution ->", Fore.GREEN,
-                      str(round(done/total, 2)) + "%", Style.RESET_ALL)
+                rate = round(done/total, 2)
+                color = Fore.GREEN if rate > 50 else Fore.RED
+                print("Taux d'execution ->", color,
+                      str(rate) + "%", Style.RESET_ALL)
 
         # Modifier une tâche
         elif act == app_menu[3]:
@@ -144,6 +146,6 @@ def main():
 
 data_app = {"run": True}
 if __name__ == "__main__":
-    # data_conn.create_database()
+    data_conn.create_database()
     while data_app["run"]:
         main()
