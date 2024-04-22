@@ -145,18 +145,19 @@ def get_stats(userId):
     return total, done
 
 
-def admin_stats():
+def get_users():
     conn = get_conn()
     cursor = conn.cursor()
 
     # Count all tasks from a user
     cursor.execute(
-        """SELECT users.name, tasks.*
-        FROM tasks
-        INNER JOIN users ON tasks.user_id = users.id
-        WHERE tasks.user_id = 2""")
+        """SELECT name, id FROM users""")
     total = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
     # print(total)
+    return total
 
 
 if __name__ == "__main__":
@@ -167,6 +168,6 @@ if __name__ == "__main__":
     # insert_tasks("push_up", "en faire 30 chaque jour", 0, 1)
     # insert_tasks("Arabic", "a lesson by day", 0, 1)
     # insert_tasks("Be happy", "Every single day", 1, 1)
-    # for t in list_tasks(3):
-    #     print(t)
-    print(get_stats(1))
+    for t in get_users():
+        print(t)
+    # print(get_stats(1))

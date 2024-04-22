@@ -19,7 +19,7 @@ def app():
     print(Style.RESET_ALL)
 
     app_menu = ["Lister mes tâches", "Nouvelle tâche", "Statistiques",
-                "Modifier une tâche", "Supprimer une tâche", "Quitter"]
+                "Marquer comme termine", "Supprimer une tâche", "Quitter"]
 
     while data_app["run"]:
         act = inquirer.select(message=f"{data_app['user']['name']} >",
@@ -57,21 +57,25 @@ def app():
         # Stats
         elif act == app_menu[2]:
             if data_app["user"]["admin"]:
-                total, done = data_conn.get_stats(data_app["user"]["id"])
-                print("Total ->", Fore.BLUE, total, Style.RESET_ALL)
-                print("Fini ->", Fore.BLUE, done, Style.RESET_ALL)
-                print("Taux d'execution ->", Fore.GREEN,
-                      str(round(done/total, 2)) + "%", Style.RESET_ALL)
+                for name, id in data_conn.get_users():
+                    print("\n" + Fore.YELLOW + name + Style.RESET_ALL)
+                    total, done = data_conn.get_stats(id)
+                    print("Total ->", Fore.BLUE, total, Style.RESET_ALL)
+                    print("Fini ->", Fore.BLUE, done, Style.RESET_ALL)
+                    rate = round(done/total, 2) if total else 0.0
+                    color = Fore.GREEN if rate > 50 else Fore.RED
+                    print("Taux d'execution ->", color,
+                        str(rate) + "%", Style.RESET_ALL)
             else:
                 total, done = data_conn.get_stats(data_app["user"]["id"])
                 print("Total ->", Fore.BLUE, total, Style.RESET_ALL)
                 print("Fini ->", Fore.BLUE, done, Style.RESET_ALL)
-                rate = round(done/total, 2)
+                rate = round(done/total, 2) if total else 0.0
                 color = Fore.GREEN if rate > 50 else Fore.RED
                 print("Taux d'execution ->", color,
                       str(rate) + "%", Style.RESET_ALL)
 
-        # Modifier une tâche
+        # Marquer comme termine
         elif act == app_menu[3]:
             ...
 
@@ -88,7 +92,7 @@ def main():
     # Initialiser colorama pour activer la coloration
     init()
 
-    print(Emoji.replace("\n:no_entry: \U0001F46E Declinez votre identite"))
+    print(Emoji.replace("\n:no_entry: 👮 Declinez votre identite"))
 
     # Define menu items
     auth_menu = ['Se connecter', 'Creer un compte', 'Quitter']
