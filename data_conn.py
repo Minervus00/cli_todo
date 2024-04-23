@@ -104,6 +104,44 @@ def insert_tasks(titre: str, desc: str, done: int, id_user: int):
     conn.close()
 
 
+def delete_task(task_id: int, user_id: int):
+    # Connect to MySQL server
+    conn = get_conn()
+    cursor = conn.cursor()
+
+    # Insert a task into the 'tasks' table
+    cursor.execute(
+        """DELETE FROM tasks WHERE id=%s AND userId=%s""",
+        (task_id, user_id))
+
+    rep = False if cursor.rowcount <= 0 else True
+
+    # Commit changes and close connection
+    conn.commit()
+    conn.close()
+
+    return rep
+
+
+def set_task_done(task_id: int, user_id: int):
+    # Connect to MySQL server
+    conn = get_conn()
+    cursor = conn.cursor()
+
+    # Insert a task into the 'tasks' table
+    cursor.execute(
+        """UPDATE tasks SET fini=%s WHERE id=%s AND userId=%s""",
+        (1, task_id, user_id))
+
+    rep = False if cursor.rowcount <= 0 else True
+
+    # Commit changes and close connection
+    conn.commit()
+    conn.close()
+
+    return rep
+
+
 def list_tasks(id):
     conn = get_conn()
     cursor = conn.cursor()
@@ -162,12 +200,4 @@ def get_users():
 
 if __name__ == "__main__":
     # create_database()
-    # insert_user("FuLLM374L", "full@metal.com", "N4vyS34l", 1)
-    # resp = search_user("FuLLM374L", "N4vyS34l")
-    # print(resp)
-    # insert_tasks("push_up", "en faire 30 chaque jour", 0, 1)
-    # insert_tasks("Arabic", "a lesson by day", 0, 1)
-    # insert_tasks("Be happy", "Every single day", 1, 1)
-    for t in get_users():
-        print(t)
-    # print(get_stats(1))
+    print(int(set_task_done(7, 5)))

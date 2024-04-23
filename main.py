@@ -22,7 +22,7 @@ def app():
                 "Marquer comme termine", "Supprimer une tâche", "Quitter"]
 
     while data_app["run"]:
-        act = inquirer.select(message=f"{data_app['user']['name']} >",
+        act = inquirer.select(message=f"\n{data_app['user']['name']} >",
                               amark="",
                               qmark="", choices=app_menu).execute()
 
@@ -87,11 +87,19 @@ def app():
 
         # Marquer comme termine
         elif act == app_menu[3]:
-            ...
+            id = inquirer.number(message="ID de la tâche:", amark="").execute()
+            if not data_conn.set_task_done(id, data_app["user"]["id"]):
+                print(Fore.RED + "<!> Erreur! Reverifiez l'ID entre" + Style.RESET_ALL)
+            else:
+                print(Fore.GREEN + "<!> Operation effectuee avec succes" + Style.RESET_ALL)
 
         # Supprimer une tâche
         elif act == app_menu[4]:
-            ...
+            id = inquirer.number(message="ID de la tâche:", amark="").execute()
+            if not data_conn.delete_task(id, data_app["user"]["id"]):
+                print(Fore.RED + "<!> Erreur! Reverifiez l'ID entre" + Style.RESET_ALL)
+            else:
+                print(Fore.GREEN + "<!> Operation effectuee avec succes" + Style.RESET_ALL)
 
         # Quitter
         else:
@@ -125,7 +133,7 @@ def main():
             app()
         else:
             print(Fore.LIGHTRED_EX + "<!> " + Style.RESET_ALL, end="")
-            print("Ce compte n'existe pas, revérifiez les valeurs entreés")
+            print("Ce compte n'existe pas, reverifiez les valeurs entreés")
 
     # Creation de compte
     elif answ == auth_menu[1]:
