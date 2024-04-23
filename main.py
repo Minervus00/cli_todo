@@ -38,9 +38,11 @@ def app():
             for task in data_conn.list_tasks(data_app["user"]["id"]):
                 row = list(task[:-1])
                 row[0] = str(row[0])
-                row[-1], col = ("OUI", "green") if row[-1] == 1 else ("NON", "red")
+                # row[-1], col = ("OUI", "green") if row[-1] == 1 else ("NON", "red")
+                # table.add_row(*row, style=col)
+                row[-1] = "[green]OUI[/]" if row[-1] == 1 else "[red]NON[/]"
+                table.add_row(*row)
                 # print(row)
-                table.add_row(*row, style=col)
 
             console = Console()
             print()
@@ -57,20 +59,28 @@ def app():
         # Stats
         elif act == app_menu[2]:
             if data_app["user"]["admin"]:
+                table = Table(title="Statistiques Generales", show_lines=True)
+
+                table.add_column("Nom", justify="center")
+                table.add_column("Termine")
+                table.add_column("Total")
+                table.add_column("Taux d'execution", justify="center")
                 for name, id in data_conn.get_users():
-                    print("\n" + Fore.YELLOW + name + Style.RESET_ALL)
                     total, done = data_conn.get_stats(id)
-                    print("Total ->", Fore.BLUE, total, Style.RESET_ALL)
-                    print("Fini ->", Fore.BLUE, done, Style.RESET_ALL)
-                    rate = round(done/total, 2) if total else 0.0
-                    color = Fore.GREEN if rate > 50 else Fore.RED
-                    print("Taux d'execution ->", color,
-                        str(rate) + "%", Style.RESET_ALL)
+                    rate = round(done/total, 2) * 100 if total else 0.0
+                    if rate > 50:
+                        rate = "[green]" + str(rate) + "%[/]"
+                    else:
+                        rate = "[red]" + str(rate) + "%[/]"
+                    table.add_row(name, str(done), str(total), rate)
+                console = Console()
+                print()
+                console.print(table)
             else:
                 total, done = data_conn.get_stats(data_app["user"]["id"])
                 print("Total ->", Fore.BLUE, total, Style.RESET_ALL)
                 print("Fini ->", Fore.BLUE, done, Style.RESET_ALL)
-                rate = round(done/total, 2) if total else 0.0
+                rate = round(done/total, 2) * 100 if total else 0.0
                 color = Fore.GREEN if rate > 50 else Fore.RED
                 print("Taux d'execution ->", color,
                       str(rate) + "%", Style.RESET_ALL)
