@@ -2,6 +2,7 @@ import mysql.connector
 
 USERNAME = "root"
 PASSWD = "root"
+DB = "cli_todo"
 
 
 def get_conn():
@@ -9,7 +10,7 @@ def get_conn():
         host="localhost",
         user=USERNAME,
         password=PASSWD,
-        database="cli_todo"
+        database=DB
     )
 
     return conn
@@ -26,10 +27,10 @@ def create_database():
     cursor = conn.cursor()
 
     # Create the database if it doesn't exist
-    cursor.execute("CREATE DATABASE IF NOT EXISTS cli_todo")
+    cursor.execute("CREATE DATABASE IF NOT EXISTS " + DB)
 
     # Connect to the newly created database
-    conn.database = "cli_todo"
+    conn.database = DB
 
     # Create USERS table if it doesn't already exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS users
@@ -51,6 +52,8 @@ def create_database():
 
     # Commit changes and close connection
     conn.commit()
+
+    cursor.close()
     conn.close()
 
 
@@ -67,8 +70,12 @@ def insert_user(name: str, email: str, passwd: str, admin: int):
 
     # Commit changes and close connection
     conn.commit()
+
+    rep = cursor.rowcount > 0
+
     cursor.close()
     conn.close()
+    return rep
 
 
 def search_user(name, passwd):
@@ -84,7 +91,6 @@ def search_user(name, passwd):
 
     cursor.close()
     conn.close()
-
     return res
 
 
@@ -101,7 +107,12 @@ def insert_tasks(titre: str, desc: str, done: int, id_user: int):
 
     # Commit changes and close connection
     conn.commit()
+
+    rows = cursor.rowcount > 0
+
+    cursor.close()
     conn.close()
+    return rows
 
 
 def delete_task(task_id: int, user_id: int):
@@ -114,12 +125,13 @@ def delete_task(task_id: int, user_id: int):
         """DELETE FROM tasks WHERE id=%s AND userId=%s""",
         (task_id, user_id))
 
-    rep = False if cursor.rowcount <= 0 else True
+    rep = cursor.rowcount > 0
 
     # Commit changes and close connection
     conn.commit()
-    conn.close()
 
+    cursor.close()
+    conn.close()
     return rep
 
 
@@ -133,12 +145,13 @@ def set_task_done(task_id: int, user_id: int):
         """UPDATE tasks SET fini=%s WHERE id=%s AND userId=%s""",
         (1, task_id, user_id))
 
-    rep = False if cursor.rowcount <= 0 else True
+    rep = cursor.rowcount > 0
 
     # Commit changes and close connection
     conn.commit()
-    conn.close()
 
+    cursor.close()
+    conn.close()
     return rep
 
 
@@ -155,7 +168,6 @@ def list_tasks(id):
 
     cursor.close()
     conn.close()
-
     return res
 
 
