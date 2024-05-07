@@ -1,12 +1,12 @@
 import unittest
-import data_conn as dc
+import connection as dc
 
 
 class TestCliFeature(unittest.TestCase):
 
     def setUp(self) -> None:
         dc.DB = "cli_test"
-        dc.create_database()
+        dc.create_tables()
 
     # def test_user_insertion(self):
     #     user1 = ("Dembe", "dembe@black.list", "ddddd", 1)
