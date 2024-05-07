@@ -1,53 +1,30 @@
-import mysql.connector
+from sqlite3 import connect
 
-USERNAME = "root"
-PASSWD = "root"
-DB = "cli_todo"
+DB = "cli_todo.db"
 
 
-def get_conn():
-    conn = mysql.connector.connect(
-        host="localhost",
-        user=USERNAME,
-        password=PASSWD,
-        database=DB
-    )
-
-    return conn
-
-
-# Function to create the database and tables if they don't exist
-def create_database():
+# Function to create the tables if they don't exist
+def create_tables():
     # Connect to MySQL server
-    conn = mysql.connector.connect(
-        host="localhost",
-        user=USERNAME,
-        password=PASSWD
-    )
+    conn = connect(DB)
     cursor = conn.cursor()
-
-    # Create the database if it doesn't exist
-    cursor.execute("CREATE DATABASE IF NOT EXISTS " + DB)
-
-    # Connect to the newly created database
-    conn.database = DB
 
     # Create USERS table if it doesn't already exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS users
-                     (id INT AUTO_INCREMENT PRIMARY KEY,
+                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
                       name VARCHAR(50),
                       email VARCHAR(25),
                       password VARCHAR(25),
-                      admin TINYINT(1)
+                      admin INTEGER
                    )''')
 
     # Create TASKS table if it doesn't already exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS tasks
-                     (id INT AUTO_INCREMENT PRIMARY KEY,
+                     (id INTEGER PRIMARY KEY AUTOINCREMENT,
                       titre VARCHAR(50) NOT NULL,
                       description TEXT,
-                      fini TINYINT(1) NOT NULL DEFAULT 0,
-                      userId INT NOT NULL
+                      fini INTEGER NOT NULL DEFAULT 0,
+                      userId INTEGER NOT NULL
                   )''')
 
     # Commit changes and close connection
@@ -59,13 +36,13 @@ def create_database():
 
 def insert_user(name: str, email: str, passwd: str, admin: int):
     # Connect to MySQL server
-    conn = get_conn()
+    conn = connect(DB)
     cursor = conn.cursor()
 
     # Insert a user into the 'users' table
     cursor.execute(
         """INSERT INTO users (name, email, password, admin)
-        VALUES (%s, %s, %s, %s)""",
+        VALUES (?, ?, ?, ?)""",
         (name, email, passwd, admin))
 
     # Commit changes and close connection
@@ -79,15 +56,15 @@ def insert_user(name: str, email: str, passwd: str, admin: int):
 
 
 def search_user(name, passwd):
-    conn = get_conn()
+    conn = connect(DB)
     cursor = conn.cursor()
 
     # Search a user in the 'users' table with name and passwd
     cursor.execute(
-        """SELECT * FROM users WHERE name = %s AND password = %s""",
+        """SELECT * FROM users WHERE name = ? AND password = ?""",
         (name, passwd))
     res = cursor.fetchone()
-    # print(res)
+    print(name, passwd, "->", res)
 
     cursor.close()
     conn.close()
@@ -96,13 +73,13 @@ def search_user(name, passwd):
 
 def insert_tasks(titre: str, desc: str, done: int, id_user: int):
     # Connect to MySQL server
-    conn = get_conn()
+    conn = connect(DB)
     cursor = conn.cursor()
 
     # Insert a task into the 'tasks' table
     cursor.execute(
         """INSERT INTO tasks (titre, description, fini, userId)
-        VALUES (%s, %s, %s, %s)""",
+        VALUES (?, ?, ?, ?)""",
         (titre, desc, done, id_user))
 
     # Commit changes and close connection
@@ -117,12 +94,12 @@ def insert_tasks(titre: str, desc: str, done: int, id_user: int):
 
 def delete_task(task_id: int, user_id: int):
     # Connect to MySQL server
-    conn = get_conn()
+    conn = connect(DB)
     cursor = conn.cursor()
 
     # Insert a task into the 'tasks' table
     cursor.execute(
-        """DELETE FROM tasks WHERE id=%s AND userId=%s""",
+        """DELETE FROM tasks WHERE id=? AND userId=?""",
         (task_id, user_id))
 
     rep = cursor.rowcount > 0
@@ -137,12 +114,12 @@ def delete_task(task_id: int, user_id: int):
 
 def set_task_done(task_id: int, user_id: int):
     # Connect to MySQL server
-    conn = get_conn()
+    conn = connect(DB)
     cursor = conn.cursor()
 
     # Insert a task into the 'tasks' table
     cursor.execute(
-        """UPDATE tasks SET fini=%s WHERE id=%s AND userId=%s""",
+        """UPDATE tasks SET fini=? WHERE id=? AND userId=?""",
         (1, task_id, user_id))
 
     rep = cursor.rowcount > 0
@@ -156,12 +133,12 @@ def set_task_done(task_id: int, user_id: int):
 
 
 def list_tasks(id):
-    conn = get_conn()
+    conn = connect(DB)
     cursor = conn.cursor()
 
     # Get all tasks from a specific user
     cursor.execute(
-        """SELECT * FROM tasks WHERE userId = %s""",
+        """SELECT * FROM tasks WHERE userId = ?""",
         (id,))
     res = cursor.fetchall()
     # print(res)
@@ -172,19 +149,19 @@ def list_tasks(id):
 
 
 def get_stats(userId):
-    conn = get_conn()
+    conn = connect(DB)
     cursor = conn.cursor()
 
     # Count all tasks from a user
     cursor.execute(
-        """SELECT COUNT(*) FROM tasks WHERE userId = %s""",
+        """SELECT COUNT(*) FROM tasks WHERE userId = ?""",
         (userId,))
     total = cursor.fetchone()[0]
     # print(total)
 
     # Count done tasks from a user
     cursor.execute(
-        """SELECT COUNT(*) FROM tasks WHERE userId = %s AND fini = %s""",
+        """SELECT COUNT(*) FROM tasks WHERE userId = ? AND fini = ?""",
         (userId, 1))
     done = cursor.fetchone()[0]
     # print(done)
@@ -196,7 +173,7 @@ def get_stats(userId):
 
 
 def get_users():
-    conn = get_conn()
+    conn = connect(DB)
     cursor = conn.cursor()
 
     # Count all tasks from a user
@@ -211,5 +188,5 @@ def get_users():
 
 
 if __name__ == "__main__":
-    # create_database()
+    create_tables()
     print(int(set_task_done(7, 5)))

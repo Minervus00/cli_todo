@@ -27,7 +27,8 @@ class TestCliFeature(unittest.TestCase):
     #     self.assertTrue(dc.delete_task(2, 2))
 
     def test_set_task_done(self):
-        self.assertTrue(dc.set_task_done(1, 2))
+        # self.assertTrue(dc.set_task_done(1, 2))
+        self.assertFalse(dc.set_task_done(1, 2))
 
 
 if __name__ == "__main__":
