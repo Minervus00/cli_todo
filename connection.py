@@ -1,5 +1,31 @@
 from sqlite3 import connect
 
+<<<<<<< HEAD:data_conn.py
+USERNAME = "root"
+PASSWD = ""
+DB = "cli_todo"
+
+
+def get_conn():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user=USERNAME,
+        password="",
+        database=DB
+    )
+
+    return conn
+
+
+# Function to create the database and tables if they don't exist
+def create_database():
+    # Connect to MySQL server
+    conn = mysql.connector.connect(
+        host="localhost",
+        user=USERNAME,
+        password=""
+    )
+=======
 DB = "cli_todo.db"
 
 
@@ -7,6 +33,7 @@ DB = "cli_todo.db"
 def create_tables():
     # Connect to MySQL server
     conn = connect(DB)
+>>>>>>> 25ce4bbda1e13006211d268f547428353c3bd959:connection.py
     cursor = conn.cursor()
 
     # Create USERS table if it doesn't already exist
