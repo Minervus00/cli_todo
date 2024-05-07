@@ -4,13 +4,13 @@ from InquirerPy import inquirer
 from rich.emoji import Emoji
 from rich.console import Console
 from rich.table import Table
-import data_conn
+import connection
 
 
 def app():
     if not data_app["user"].get("id", None):
-        id = data_conn.search_user(data_app["user"]["name"],
-                                   data_app["user"]["passwd"])[0]
+        id = connection.search_user(data_app["user"]["name"],
+                                    data_app["user"]["passwd"])[0]
         data_app["user"]["id"] = id
 
     # Texte de bienvenue
@@ -35,7 +35,7 @@ def app():
             table.add_column("Description")
             table.add_column("Terminee", justify="center")
 
-            for task in data_conn.list_tasks(data_app["user"]["id"]):
+            for task in connection.list_tasks(data_app["user"]["id"]):
                 row = list(task[:-1])
                 row[0] = str(row[0])
                 # row[-1], col = ("OUI", "green") if row[-1] == 1 else ("NON", "red")
@@ -53,7 +53,7 @@ def app():
             titre = inquirer.text(message="Titre:", amark="").execute()
             desc = inquirer.text(message="Description:", amark="").execute()
             done = int(inquirer.confirm(message="Marquer comme termine ?").execute())
-            data_conn.insert_tasks(titre, desc, done, data_app["user"]["id"])
+            connection.insert_tasks(titre, desc, done, data_app["user"]["id"])
             print(Fore.GREEN + "<!> Operation effectuee avec succes\n" + Style.RESET_ALL)
 
         # Stats
@@ -65,8 +65,8 @@ def app():
                 table.add_column("Termine")
                 table.add_column("Total")
                 table.add_column("Taux d'execution", justify="center")
-                for name, id in data_conn.get_users():
-                    total, done = data_conn.get_stats(id)
+                for name, id in connection.get_users():
+                    total, done = connection.get_stats(id)
                     rate = round(done/total, 2) * 100 if total else 0.0
                     if rate > 50:
                         rate = "[green]" + str(rate) + "%[/]"
@@ -77,7 +77,7 @@ def app():
                 print()
                 console.print(table)
             else:
-                total, done = data_conn.get_stats(data_app["user"]["id"])
+                total, done = connection.get_stats(data_app["user"]["id"])
                 print("Total ->", Fore.BLUE, total, Style.RESET_ALL)
                 print("Fini ->", Fore.BLUE, done, Style.RESET_ALL)
                 rate = round(done/total, 2) * 100 if total else 0.0
@@ -88,7 +88,7 @@ def app():
         # Marquer comme termine
         elif act == app_menu[3]:
             id = inquirer.number(message="ID de la tâche:", amark="").execute()
-            if not data_conn.set_task_done(id, data_app["user"]["id"]):
+            if not connection.set_task_done(id, data_app["user"]["id"]):
                 print(Fore.RED + "<!> Erreur! Reverifiez l'ID entre" + Style.RESET_ALL)
             else:
                 print(Fore.GREEN + "<!> Operation effectuee avec succes" + Style.RESET_ALL)
@@ -96,7 +96,7 @@ def app():
         # Supprimer une tâche
         elif act == app_menu[4]:
             id = inquirer.number(message="ID de la tâche:", amark="").execute()
-            if not data_conn.delete_task(id, data_app["user"]["id"]):
+            if not connection.delete_task(id, data_app["user"]["id"]):
                 print(Fore.RED + "<!> Erreur! Reverifiez l'ID entre" + Style.RESET_ALL)
             else:
                 print(Fore.GREEN + "<!> Operation effectuee avec succes" + Style.RESET_ALL)
@@ -126,7 +126,7 @@ def main():
         passwd = inquirer.text(message="Mot de passe:", amark="",
                                transformer=lambda txt: '*' * len(txt),
                                is_password=True).execute()
-        user = data_conn.search_user(name, passwd)
+        user = connection.search_user(name, passwd)
         if user:
             data_app["user"] = {"name": user[1],
                                 "admin": user[4], "id": user[0]}
@@ -152,12 +152,12 @@ def main():
         # print(name, email, passwd, admin)
 
         # Verifier si le compte existe deja
-        user = data_conn.search_user(name, passwd)
+        user = connection.search_user(name, passwd)
         if user:
             print(Fore.LIGHTRED_EX + "<!> " + Style.RESET_ALL, end="")
             print("Ce compte existe déja, connectez vous")
         else:
-            data_conn.insert_user(name, email, passwd, admin)
+            connection.insert_user(name, email, passwd, admin)
             data_app["user"] = {"name": name, "passwd": passwd, "admin": admin}
             app()
 
@@ -168,6 +168,6 @@ def main():
 
 data_app = {"run": True}
 if __name__ == "__main__":
-    data_conn.create_database()
+    connection.create_tables()
     while data_app["run"]:
         main()

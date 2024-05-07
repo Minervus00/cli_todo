@@ -1,5 +1,4 @@
 pyfiglet
 colorama
-mysql-connector-python
 inquirerpy
 rich

@@ -1,0 +1,28 @@
+name: cli_todo
+
+# On veut que l'outil d'intégration continue se déclenche lorsqu'on fait un push sur la branche master
+on:
+  push:
+    branches: ['main']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # cloner mon projet sur le systeme ubuntu
+    - uses: actions/checkout@v3
+    - name: installation de python
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+
+    - name: installation des dependances
+      run:
+        pip install -r requirements.txt
+
+    - name: execution des tests
+      run: python test.py
