@@ -1,7 +1,7 @@
 import mysql.connector
 
 USERNAME = "root"
-PASSWD = "root"
+PASSWD = ""
 DB = "cli_todo"
 
 
@@ -9,7 +9,7 @@ def get_conn():
     conn = mysql.connector.connect(
         host="localhost",
         user=USERNAME,
-        password=PASSWD,
+        password="",
         database=DB
     )
 
@@ -22,7 +22,7 @@ def create_database():
     conn = mysql.connector.connect(
         host="localhost",
         user=USERNAME,
-        password=PASSWD
+        password=""
     )
     cursor = conn.cursor()
 
