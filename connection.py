@@ -64,7 +64,7 @@ def search_user(name, passwd):
         """SELECT * FROM users WHERE name = ? AND password = ?""",
         (name, passwd))
     res = cursor.fetchone()
-    print(name, passwd, "->", res)
+    # print(name, passwd, "->", res)
 
     cursor.close()
     conn.close()
@@ -103,7 +103,7 @@ def delete_task(task_id: int, user_id: int):
         (task_id, user_id))
 
     rep = cursor.rowcount > 0
-
+    # print(rep)
     # Commit changes and close connection
     conn.commit()
 
