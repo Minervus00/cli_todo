@@ -18,10 +18,13 @@ python main.py
 
 ## Mode d'utilisation de l'application
 Une fois après avoir lancé le fichier "main.py", l'utilisateur devra se connecter pour continuer. Dans le cas ou l'utilisateur n'a pas de compte, il devra en créer un.
+
 ![alt text](images/image.png)
 
 Une-fois après la connexion, l'utilisateur pourra maintenant procéder a la gestion de ses taches. 
-![alt text](images/image-1.png)
+
+
+![alt text](images/imagee.png)
 
 ## Les fonctionnalités_Clés dans l'application
 #### 1-Creation des taches
