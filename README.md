@@ -9,7 +9,7 @@ L'objectif du projet est de créer une solution logicielle simple mais puissante
 ## Phase d'installation de l'application
 Pour que le lancement de l'appli soit effectif, il est nécessaire d'installer certaines dépendances se trouvant dans le fichier "requerements.txt". Pour se faire, il suffit de taper la commande suivante en ligne de commande: 
 ```python
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 Ensuite il faut lancer le l'application en tapant:
 ```python
